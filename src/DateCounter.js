@@ -23,10 +23,6 @@ function reducer (state, action) {
 };
 
 function DateCounter() {
-  // const [count, setCount] = useState( 0);
-
-  // const [count, dispatch] = useReducer(reducer, 0);
-  // const [step, setStep] = useState(1);
 
   const [state, dispatch] = useReducer(reducer, initialState); 
   const { count, step } = state;
@@ -37,14 +33,10 @@ function DateCounter() {
 
   const dec = function () {
     dispatch({ type: "dec", payload: -1 });
-    // setCount((count) => count - 1);
-    // setCount((count) => count - step);
   };
 
   const inc = function () {
     dispatch({ type: "inc", payload: 1 });
-    // setCount((count) => count + 1);
-    // setCount((count) => count + step);
   };
 
   const defineCount = function (e) {
@@ -57,9 +49,6 @@ function DateCounter() {
 
   const reset = function () {
     dispatch( {typer: "reset"} );
-
-    // setCount(0);
-    // setStep(1);
   };
 
   return (
