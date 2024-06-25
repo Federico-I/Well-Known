@@ -4,6 +4,8 @@ import Main from './Main';
 import Loader from './Loader';
 import Error from './Error';
 import StartComp from './StartComp';
+import QuestComp from './QuestComp';
+
 
 
 const initialState = {
@@ -11,6 +13,7 @@ const initialState = {
 
   // "loading", "error", "ready", "active", "finished"
   status: "loading",
+  indexQuest: 0,
 };
 
 function reducer(state, action) {
@@ -23,9 +26,14 @@ function reducer(state, action) {
         status: "ready"
       };
     case "dataFailed":
-      return{
+      return {
         ...state,
         status: "error",
+      };
+    case "start":
+      return {
+        ...state, 
+        status: "active"
       };
 
     default: 
@@ -35,7 +43,7 @@ function reducer(state, action) {
 
 function App() {
 
-  const [{questions, status}, dispatch] = useReducer(reducer, initialState);
+  const [{questions, status, indexQuest}, dispatch] = useReducer(reducer, initialState);
 
   const totalQuest = questions.length;
 
@@ -50,7 +58,8 @@ function App() {
       <Main>
         <p>{status === "loading" && <Loader />}</p>
         <p>{status === "error" && <Error />}</p>
-        <p>{status === "ready" && <StartComp totalQuest={totalQuest}/>}</p>
+        <p>{status === "ready" && <StartComp totalQuest={totalQuest} dispatch={dispatch}/>}</p>
+        <p>{status === "active" && <QuestComp question={questions[indexQuest]}/>}</p>
       </ Main>
     </div>
   );
