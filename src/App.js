@@ -1,12 +1,16 @@
 import React, { useEffect, useReducer } from 'react';
 import Header from "./Header";
 import Main from './Main';
+import Loader from './Loader';
+import Error from './Error';
+import StartComp from './StartComp';
+
 
 const initialState = {
   questions: [],
 
   // "loading", "error", "ready", "active", "finished"
-  sate: "loading",
+  status: "loading",
 };
 
 function reducer(state, action) {
@@ -15,7 +19,7 @@ function reducer(state, action) {
     case "dataReceived": 
       return { 
         ...state, 
-        question: action.payload,
+        questions: action.payload,
         status: "ready"
       };
     case "dataFailed":
@@ -31,7 +35,9 @@ function reducer(state, action) {
 
 function App() {
 
-  const [state, dispatch] = useReducer(reducer, initialState);
+  const [{questions, status}, dispatch] = useReducer(reducer, initialState);
+
+  const totalQuest = questions.length;
 
   useEffect( function() {
     fetch("https://localhost:3000/questions").then((res) => res.json()).then((data) => dispatch({ type: "dataReceived", payload: data})).catch((err) => dispatch("dataFailed"));
@@ -42,8 +48,9 @@ function App() {
       <Header />
 
       <Main>
-        <p>1/15</p>
-        <p>Question</p>
+        <p>{status === "loading" && <Loader />}</p>
+        <p>{status === "error" && <Error />}</p>
+        <p>{status === "ready" && <StartComp totalQuest={totalQuest}/>}</p>
       </ Main>
     </div>
   );
