@@ -44,7 +44,6 @@ function reducer(state, action) {
 function App() {
 
   const [{questions, status, indexQuest}, dispatch] = useReducer(reducer, initialState);
-
   const totalQuest = questions.length;
 
   useEffect( function() {
