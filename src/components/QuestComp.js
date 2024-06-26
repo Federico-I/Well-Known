@@ -1,11 +1,11 @@
 import React from 'react';
 import OptionComp from './OptionComp';
 
-function Question({ question }) {
+function Question({ question, dispatch, answer }) {
   return (
     <div>
         <h4>{question.question}</h4>
-        <OptionComp question={question}/>
+        <OptionComp question={question} dispatch={dispatch} answer={answer}/>
     </div>
   );
 };
