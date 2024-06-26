@@ -5,6 +5,9 @@ import Loader from './Loader';
 import Error from './Error';
 import StartComp from './StartComp';
 import QuestComp from './QuestComp';
+import NextQuestion from './NextQuestion';
+import ProgressComp from './ProgressComp';
+import CompletedComp from './CompletedComp';
 
 
 
@@ -16,6 +19,7 @@ const initialState = {
   indexQuest: 0,
   answer: null,
   points: 0,
+  highscore: 0,
 };
 
 function reducer(state, action) {
@@ -25,7 +29,7 @@ function reducer(state, action) {
       return { 
         ...state, 
         questions: action.payload,
-        status: "ready"
+        status: "ready",
       };
     case "dataFailed":
       return {
@@ -39,11 +43,23 @@ function reducer(state, action) {
       };
     case "newAnswer":
       const question = state.question.at(state.indexQuest);
-
       return{
         ...state,
         answer: action.payload,
         points: action.payload === question.correctOption ? state.points + question.points : state.points,
+      };
+    case "nextQuestion":
+      return{
+        ...state, indexQuest: state.indexQuest + 1,
+      };
+    case "finish":
+      return{
+        ...state, status: "completed",
+        highscore: state.points > state.highscore ? state.points : state.highscore, 
+      };
+    case "restart":
+      return{
+        ...initialState, question: state.questions, status: "ready",
       };
 
     default: 
@@ -53,8 +69,11 @@ function reducer(state, action) {
 
 function App() {
 
-  const [{questions, status, indexQuest, answer}, dispatch] = useReducer(reducer, initialState);
+  const [{questions, status, indexQuest, answer, points, highscore}, dispatch] = useReducer(reducer, initialState);
+
   const totalQuest = questions.length;
+
+  const maximumPoints = questions.reduce((prev,cur) => prev + cur.points, 0)
 
   useEffect( function() {
     fetch("https://localhost:3000/questions").then((res) => res.json()).then((data) => dispatch({ type: "dataReceived", payload: data})).catch((err) => dispatch("dataFailed"));
@@ -68,7 +87,14 @@ function App() {
         <p>{status === "loading" && <Loader />}</p>
         <p>{status === "error" && <Error />}</p>
         <p>{status === "ready" && <StartComp totalQuest={totalQuest} dispatch={dispatch}/>}</p>
-        <p>{status === "active" && <QuestComp question={questions[indexQuest]} dispatch={dispatch} answer={answer}/>}</p>
+        {status === "active" && 
+          <>
+            <ProgressComp indexQuest={indexQuest} totalQuest={totalQuest} points={points} maximumPoints={maximumPoints} answer={answer}/>
+            <QuestComp question={questions[indexQuest]} dispatch={dispatch} answer={answer} />
+            <NextQuestion dispatch={dispatch} answer={answer} indexQuest={indexQuest} totalQuest={totalQuest}/>
+          </>
+        }
+        {status === "completed" && <CompletedComp dispatch={dispatch} points={points} maximumPoints={maximumPoints} highscore={highscore}/>}
       </ Main>
     </div>
   );
