@@ -8,7 +8,10 @@ import QuestComp from './QuestComp';
 import NextQuestion from './NextQuestion';
 import ProgressComp from './ProgressComp';
 import CompletedComp from './CompletedComp';
+import Footer from './Footer';
+import TimerComp from './TimerComp';
 
+const SEC_PER_QUESTION = 30;
 
 
 const initialState = {
@@ -20,6 +23,7 @@ const initialState = {
   answer: null,
   points: 0,
   highscore: 0,
+  secondsRemaining: 10,
 };
 
 function reducer(state, action) {
@@ -39,7 +43,9 @@ function reducer(state, action) {
     case "start":
       return {
         ...state, 
-        status: "active"
+        status: "active",
+        secondsRemaining: state.questions.length * SEC_PER_QUESTION,
+
       };
     case "newAnswer":
       const question = state.question.at(state.indexQuest);
@@ -61,7 +67,11 @@ function reducer(state, action) {
       return{
         ...initialState, question: state.questions, status: "ready",
       };
-
+    case "tick":
+      return{
+        ...state, secondsRemaining: state.secondsRemaining - 1,
+        status: state.secondsRemaining === 0 ? "finished" : state.status,
+      }
     default: 
       throw new Error ("Action unknown");
   };
@@ -69,7 +79,7 @@ function reducer(state, action) {
 
 function App() {
 
-  const [{questions, status, indexQuest, answer, points, highscore}, dispatch] = useReducer(reducer, initialState);
+  const [{questions, status, indexQuest, answer, points, highscore, secondsRemaining}, dispatch] = useReducer(reducer, initialState);
 
   const totalQuest = questions.length;
 
@@ -91,7 +101,10 @@ function App() {
           <>
             <ProgressComp indexQuest={indexQuest} totalQuest={totalQuest} points={points} maximumPoints={maximumPoints} answer={answer}/>
             <QuestComp question={questions[indexQuest]} dispatch={dispatch} answer={answer} />
-            <NextQuestion dispatch={dispatch} answer={answer} indexQuest={indexQuest} totalQuest={totalQuest}/>
+            <Footer >
+              <TimerComp dispatch={dispatch} secondsRemaining={secondsRemaining}/>
+              <NextQuestion dispatch={dispatch} answer={answer} indexQuest={indexQuest} totalQuest={totalQuest}/>
+            </Footer>
           </>
         }
         {status === "completed" && <CompletedComp dispatch={dispatch} points={points} maximumPoints={maximumPoints} highscore={highscore}/>}
