@@ -10,5 +10,4 @@ function Question({ question, dispatch, answer }) {
   );
 };
 
-
 export default Question;
