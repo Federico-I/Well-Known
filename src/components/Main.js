@@ -1,8 +1,8 @@
 import React from 'react'
 
-function Main({ childern }) {
+function Main({ children }) {
   return (
-    <main className='main'>{ childern }</ main>
+    <main className='main'>{ children }</ main>
   );
 };
 

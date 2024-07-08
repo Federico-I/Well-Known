@@ -87,14 +87,14 @@ function App() {
   }, []);
 
   return (
-    <div className="App">
+    <div className="app">
       <Header />
 
       <Main>
         <p>{status === "loading" && <Loader />}</p>
         <p>{status === "error" && <Error />}</p>
         <p>{status === "ready" && <StartComp totalQuest={totalQuest} dispatch={dispatch}/>}</p>
-        {status === "active" && 
+        {status === "active" && (
           <>
             <ProgressComp indexQuest={indexQuest} totalQuest={totalQuest} points={points} maximumPoints={maximumPoints} answer={answer}/>
             <QuestComp question={questions[indexQuest]} dispatch={dispatch} answer={answer} />
@@ -103,8 +103,8 @@ function App() {
               <NextQuestion dispatch={dispatch} answer={answer} indexQuest={indexQuest} totalQuest={totalQuest}/>
             </Footer>
           </>
-        }
-        {status === "completed" && <CompletedComp dispatch={dispatch} points={points} maximumPoints={maximumPoints} highscore={highscore}/>}
+        )}
+        {status === "completed" && (  <CompletedComp dispatch={dispatch} points={points} maximumPoints={maximumPoints} highscore={highscore}/>  )}
       </ Main>
     </div>
   );
