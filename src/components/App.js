@@ -76,14 +76,14 @@ function reducer(state, action) {
 
 function App() {
 
-  const [{questions, status, indexQuest, answer, points, highscore, secondsRemaining}, dispatch] = useReducer(reducer, initialState);
+  const [{ questions, status, indexQuest, answer, points, highscore, secondsRemaining }, dispatch] = useReducer(reducer, initialState);
 
   const totalQuest = questions.length;
 
   const maximumPoints = questions.reduce((prev,cur) => prev + cur.points, 0)
 
   useEffect( function() {
-    fetch("http://localhost:8000/questions").then((res) => res.json()).then((data) => dispatch({ type: "dataReceived", payload: data})).catch((err) => dispatch("dataFailed"));
+    fetch("http://localhost:8000/questions").then((res) => res.json()).then((data) => dispatch({ type: "dataReceived", payload: data })).catch((err) => dispatch({ type: "dataFailed" }));
   }, []);
 
   return (
@@ -91,9 +91,9 @@ function App() {
       <Header />
 
       <Main>
-        <p>{status === "loading" && <Loader />}</p>
-        <p>{status === "error" && <Error />}</p>
-        <p>{status === "ready" && <StartComp totalQuest={totalQuest} dispatch={dispatch}/>}</p>
+        {status === "loading" && <Loader />}
+        {status === "error" && <Error />}
+        {status === "ready" && <StartComp totalQuest={totalQuest} dispatch={dispatch}/>}
         {status === "active" && (
           <>
             <ProgressComp indexQuest={indexQuest} totalQuest={totalQuest} points={points} maximumPoints={maximumPoints} answer={answer}/>
