@@ -46,7 +46,7 @@ function reducer(state, action) {
       };
     case "newAnswer":
       const question = state.questions.at(state.indexQuest);
-      
+
       return {
         ...state,
         answer: action.payload,
@@ -63,7 +63,7 @@ function reducer(state, action) {
       };
     case "restart":
       return {
-        ...initialState, question: state.questions, status: "ready",
+        ...initialState, questions: state.questions, status: "ready",
       };
     case "tick":
       return {
