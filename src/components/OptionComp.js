@@ -9,7 +9,7 @@ function OptionComp({ question, dispatch, answer }) {
         <button 
           className={`btn btn-option ${currInd === answer ? "answer" :  ""} ${responseSubmitted ? currInd === question.correctOption ? "correct" : "wrong" : ""}`} 
           disabled={responseSubmitted} 
-          key={option.indexQuest} 
+          key={option} 
           onClick={()=> dispatch({ type:"newAnswer", payload: currInd})}
         >
           {option}
